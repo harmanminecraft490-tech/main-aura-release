@@ -59,7 +59,7 @@ interface RendererMessage {
 export interface StreamCallbacks {
   onToken: (token: string) => void
   onThinking?: (thinking: string) => void
-  onDone: (text: string, model?: string, usage?: { input: number; output: number; total: number }) => void
+  onDone: (text: string, model?: string, usage?: { input: number; output: number; total: number }, finishReason?: string | null) => void
   onError: (error: Error) => void
   onAbort?: () => void
   onPipeline?: (steps: PipelineStep[]) => void
@@ -305,8 +305,8 @@ export function getModeAddendum(mode: AIMode): string {
  * Clamping keeps requested tokens under the provider's per-request TPM budget.
  */
 const PROVIDER_MAX_OUTPUT: Partial<Record<string, number>> = {
-  groq: 2048,
-  cerebras: 2048,
+  groq: 8192,
+  cerebras: 8192,
 }
 
 export function clampMaxTokens(provider: string, requested: number): number {
@@ -1026,7 +1026,7 @@ async function streamAnthropic(
     input: final.usage.input_tokens,
     output: final.usage.output_tokens,
     total: final.usage.input_tokens + final.usage.output_tokens,
-  })
+  }, final.stop_reason)
 }
 
 /**
@@ -1298,6 +1298,7 @@ async function streamOpenAICompat(
   let fallbackUsed = false
   let rateLimitedOnce = false
   let finalAnswerRetried = false
+  let lastFinishReason: string | null = null
   // Set once when a provider rejects a multimodal payload and Aura retries
   // text-only (see the schema-error branch below).
   let visionDropped = false
@@ -1445,6 +1446,7 @@ async function streamOpenAICompat(
           }
         }
         if (chunk.model) lastModel = chunk.model
+        if (chunk.choices?.[0]?.finish_reason) lastFinishReason = chunk.choices[0].finish_reason
       }
     } catch (error) {
       if (abortSignal.aborted) {
@@ -1557,7 +1559,7 @@ async function streamOpenAICompat(
     }
   }
 
-  callbacks.onDone(finalText, streamOpts?.publicModelName ?? lastModel)
+  callbacks.onDone(finalText, streamOpts?.publicModelName ?? lastModel, undefined, lastFinishReason)
 }
 
 export async function testConnection(config: AIConfig | APIProfile): Promise<TestConnectionResult> {
