@@ -1,0 +1,43 @@
+name: Aura Tool Cutoff Fix
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - name: Raise OpenRouter free-pool tool-call budget
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('src/electron/openrouterFreePool.ts')
+          s = p.read_text()
+          old = 'const MAX_OUTPUT_TOKENS = 8192'
+          new = 'const MAX_OUTPUT_TOKENS = 32768'
+          if old not in s:
+              raise SystemExit('OpenRouter free-pool output ceiling not found')
+          s = s.replace(old, new, 1)
+          p.write_text(s)
+          PY
+      - run: npx tsc -p tsconfig.electron.json --noEmit
+      - run: npm run build
+      - name: Commit and remove temporary workflow
+        shell: bash
+        run: |
+          set -e
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm -f .github/workflows/aura-tool-cutoff-fix.yml
+          git add src/electron/openrouterFreePool.ts .github/workflows/aura-tool-cutoff-fix.yml
+          git commit -m 'fix: raise free-pool tool call output budget'
+          git push origin HEAD:main
