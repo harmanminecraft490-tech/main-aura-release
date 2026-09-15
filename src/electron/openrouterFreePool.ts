@@ -41,7 +41,7 @@ import { ensureEnvLoaded } from './aiConfig'
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1'
 const REQUEST_TIMEOUT_MS = 90_000
 const MAX_RETRIES = 5
-const MAX_OUTPUT_TOKENS = 8192
+const MAX_OUTPUT_TOKENS = 32768
 const MAX_CONTEXT_CHARS = 80_000 // ~20k tokens
 
 // ─────────────────────────────────────────────────────────────────────────────
