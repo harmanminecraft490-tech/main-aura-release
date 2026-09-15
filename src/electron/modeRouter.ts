@@ -9,9 +9,7 @@ export type EffectiveAIMode = Exclude<AIMode, 'auto'>
 export function resolveEffectiveMode(userMessage: string, selected: AIMode | string | undefined): EffectiveAIMode {
   const mode = (selected ?? 'auto') as AIMode
   if (mode !== 'auto') {
-    if (mode === 'fast' || mode === 'balanced' || mode === 'think' || mode === 'plan' || mode === 'max' || mode === 'bypass') {
-      return mode
-    }
+    if (mode === 'fast' || mode === 'balanced' || mode === 'think' || mode === 'plan' || mode === 'max' || mode === 'bypass') return mode
     return 'think'
   }
 
@@ -20,7 +18,6 @@ export function resolveEffectiveMode(userMessage: string, selected: AIMode | str
   const len = text.length
   const lines = text.split(/\r?\n/).length
 
-  // Explicit user intent wins
   if (/\b(bypass|just do it|no confirm|don'?t ask)\b/i.test(lower)) return 'bypass'
   if (/\b(max(?:imum)? quality|go deep|thorough analysis|exhaustive)\b/i.test(lower)) return 'max'
   if (/\b(quick|briefly|tl;dr|short answer|just tell me)\b/i.test(lower)) return 'fast'
@@ -33,7 +30,9 @@ export function resolveEffectiveMode(userMessage: string, selected: AIMode | str
     /\b(app|application|system|feature|module|service|api|dashboard|website|cli)\b/i.test(lower) &&
       /\b(add|build|create|implement|make|write|design)\b/i.test(lower)
 
-  if (isBigBuild) return 'plan'
+  // Large autonomous work belongs in the execution path. Explicit Plan mode is
+  // still handled above and remains plan-only.
+  if (isBigBuild) return 'think'
 
   const isCoding =
     /\b(code|function|class|bug|fix|implement|refactor|endpoint|typescript|javascript|python|react|error|stack trace)\b/i.test(lower) ||
@@ -47,7 +46,6 @@ export function resolveEffectiveMode(userMessage: string, selected: AIMode | str
 
   if (len < 120 && lines <= 3) return 'fast'
   if (/\b(why|how does|explain|analyze|compare|reason)\b/i.test(lower) || len > 280) return 'think'
-
   return 'balanced'
 }
 
