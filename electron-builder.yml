@@ -1,0 +1,101 @@
+appId: com.aura.ai
+productName: Aura
+copyright: Copyright © 2026 Aura AI
+artifactName: ${productName}-Setup-${version}.${ext}
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - package.json
+  # Env files are bundled so the packaged app can resolve Aura-owned keys
+  # (GROQ_API_KEY, etc.) via app.getAppPath() at runtime, matching dev.
+  - ".env.example"
+  - ".env"
+  - ".env.local"
+  - "!**/*.map"
+  - "!**/*.ts"
+  - "!**/node_modules/.bin"
+
+# Windows Configuration
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - ia32
+  requestedExecutionLevel: asInvoker
+  publisherName: Aura AI
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Aura
+  include: build/installer.nsh
+  displayLanguageSelector: false
+  installerLanguages:
+    - en_US
+  language: 1033
+  warningsAsErrors: false
+
+# macOS Configuration
+mac:
+  target:
+    - dmg
+    - zip
+  category: public.app-category.productivity
+  icon: build/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  darkModeSupport: true
+
+dmg:
+  title: ${productName} ${version}
+  icon: build/icon.icns
+  backgroundColor: "#1a1a2e"
+  window:
+    width: 600
+    height: 450
+  contents:
+    - x: 180
+      y: 220
+      type: file
+    - x: 420
+      y: 220
+      type: link
+      path: /Applications
+
+# Linux Configuration
+linux:
+  target:
+    - AppImage
+    - deb
+    - rpm
+  category: Office
+  icon: build/icon.png
+  maintainer: Aura AI <support@aura.ai>
+  vendor: Aura AI
+  synopsis: Your Intelligence, Amplified
+  description: Advanced AI workspace combining the best of ChatGPT, Claude, Cursor, and more.
+
+# Auto-Update Configuration
+publish:
+  provider: github
+  owner: aura-ai
+  repo: aura-desktop
+  releaseType: release
+  private: false
+
+# Compression
+compression: maximum
+removePackageScripts: true
+nodeGypRebuild: false
+buildDependenciesFromSource: false

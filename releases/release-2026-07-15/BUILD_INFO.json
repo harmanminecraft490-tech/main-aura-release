@@ -1,0 +1,38 @@
+{
+  "project": "Aura AI",
+  "projectVersion": "2.0.0",
+  "vNextVersion": "3.0.0-dev",
+  "releaseVersion": "release-2026-07-15",
+  "releaseType": "development-snapshot",
+  "buildDate": "2026-07-15",
+  "git": {
+    "available": false,
+    "commit": null,
+    "branch": null,
+    "note": "Project directory is not a git repository."
+  },
+  "platform": {
+    "os": "Windows 11 Home Single Language",
+    "osVersion": "10.0.26220",
+    "arch": "x64",
+    "nodeVersion": "24.18.0"
+  },
+  "frameworks": {
+    "electron": "^33.2.1",
+    "react": "^19.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "tailwindcss": "^3.4.17",
+    "zustand": "^5.0.3",
+    "nextjs": null,
+    "prisma": null
+  },
+  "packages": {
+    "root": { "installed": true, "builds": true },
+    "aura-vnext": { "installed": false, "builds": false, "note": "npm install + typecheck pending" }
+  },
+  "completion": {
+    "overallPercent": 75,
+    "remaining": ["settings-ui", "typecheck-fixes", "vnext-docs", "smoke-test"]
+  }
+}

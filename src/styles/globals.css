@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-glass-border;
+  }
+
+  body {
+    @apply bg-surface-0 text-white overflow-hidden select-none;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  textarea,
+  input,
+  [contenteditable='true'],
+  .aura-markdown {
+    user-select: text;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  ::selection {
+    background: rgba(108, 71, 255, 0.4);
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-glass-light backdrop-blur-2xl border border-glass-border;
+  }
+
+  .glass-heavy {
+    @apply bg-glass-heavy backdrop-blur-3xl border border-glass-border;
+  }
+
+  .glass-card {
+    @apply bg-glass-light backdrop-blur-2xl border border-glass-border rounded-2xl;
+  }
+
+  .glow {
+    box-shadow: 0 0 30px rgba(108, 71, 255, 0.15),
+                0 0 60px rgba(108, 71, 255, 0.05);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(108, 71, 255, 0.5);
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-aura-400 via-purple-400 to-pink-400 bg-clip-text text-transparent;
+  }
+
+  .aura-input {
+    @apply w-full bg-surface-2 border border-glass-border rounded-xl px-4 py-3
+           text-white placeholder-white/30 outline-none
+           focus:border-aura-500/50 focus:ring-1 focus:ring-aura-500/20
+           transition-all duration-200;
+  }
+
+  .aura-markdown {
+    @apply text-white/80;
+  }
+
+  .aura-markdown p {
+    @apply mb-4 leading-7;
+  }
+
+  .aura-markdown h1,
+  .aura-markdown h2,
+  .aura-markdown h3 {
+    @apply mb-3 mt-6 font-semibold tracking-tight text-white;
+  }
+
+  .aura-markdown h1 { @apply text-2xl; }
+  .aura-markdown h2 { @apply text-xl; }
+  .aura-markdown h3 { @apply text-lg; }
+
+  .aura-markdown ul,
+  .aura-markdown ol {
+    @apply mb-4 ml-6 space-y-2;
+  }
+
+  .aura-markdown ul { @apply list-disc; }
+  .aura-markdown ol { @apply list-decimal; }
+
+  .aura-markdown a {
+    @apply text-aura-200 underline decoration-aura-300/40 underline-offset-4;
+  }
+
+  .aura-markdown blockquote {
+    @apply my-4 border-l-2 border-aura-300/40 pl-4 text-white/60;
+  }
+
+  .aura-markdown table {
+    @apply my-4 w-full overflow-hidden rounded-2xl border border-white/10 text-sm;
+  }
+
+  .aura-markdown th,
+  .aura-markdown td {
+    @apply border border-white/10 px-3 py-2;
+  }
+
+  .aura-markdown th {
+    @apply bg-white/10 text-white;
+  }
+
+  .drag-region {
+    -webkit-app-region: drag;
+    app-region: drag;
+  }
+
+  .no-drag {
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
